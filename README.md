@@ -3,4 +3,4 @@ This is a very simple tool that lets you draw on a CSGO radar image to get a mos
 
 This is currently an early build. If you have comments or suggestions I am open to adding features as required.
 
-Download;
+Download: [Latest](https://github.com/7ark/Radar-Timing-Tester/releases/latest)
