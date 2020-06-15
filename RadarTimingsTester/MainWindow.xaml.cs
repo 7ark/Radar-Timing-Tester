@@ -47,7 +47,8 @@ namespace RadarTimingsTester
                     double x2 = (lines[i].X2 * mod * scale) + mapPosX;
                     double y1 = (lines[i].Y1 * mod * scale) + mapPosY;
                     double y2 = (lines[i].Y2 * mod * scale) + mapPosY;
-                    totalDistance += Distance(x1, y1, x2, y2);
+                    double dist = Distance(x1, y1, x2, y2);
+                    totalDistance += dist;
                 }
 
                 //Adjust to get timings when running with a knife, maybe I'll add more weapons in the future.
@@ -71,9 +72,9 @@ namespace RadarTimingsTester
         private List<PathData> paths = new List<PathData>();
 
         //Map Data
-        private static float mapPosX = 0;
-        private static float mapPosY = 0;
-        private static float mapScale = 0;
+        private static float mapPosX = 10;
+        private static float mapPosY = 10;
+        private static float mapScale = 1;
 
         public MainWindow()
         {
@@ -89,6 +90,7 @@ namespace RadarTimingsTester
         {
             if (File.Exists(path))
             {
+                List<string> test = new List<string>();
                 string[] txtData = File.ReadAllLines(path);
 
                 foreach (string line in txtData)
@@ -96,20 +98,46 @@ namespace RadarTimingsTester
                     if (line.Contains("pos_x"))
                     {
                         string val = line.Split('"')[3];
-                        mapPosX = (int)System.Convert.ToSingle(val);
+                        mapPosX = ConvertFromStringToFloat(val);
                     }
                     if (line.Contains("pos_y"))
                     {
                         string val = line.Split('"')[3];
-                        mapPosY = (int)System.Convert.ToSingle(val);
+                        mapPosY = ConvertFromStringToFloat(val);
                     }
                     if (line.Contains("scale"))
                     {
                         string val = line.Split('"')[3];
-                        mapScale = System.Convert.ToSingle(val);
+                        mapScale = ConvertFromStringToFloat(val);
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// In some cases System.Convert.ToSingle wasn't working properly, so I handle it myself
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        private float ConvertFromStringToFloat(string val)
+        {
+            float result = 0;
+            string[] halfs = val.Split('.');
+            result = 0;
+            result += System.Convert.ToInt32(halfs[0]);
+
+            int index = halfs[1].Length - 1;
+            while (halfs[1].Length > 0 && halfs[1][halfs[1].Length - 1] == '0')
+            {
+                halfs[1] = halfs[1].Substring(0, halfs[1].Length - 1);
+            }
+
+            if(halfs[1].Length > 0)
+            {
+                result += System.Convert.ToInt32(halfs[1]) * 0.01f;
+            }
+
+            return result;
         }
 
         private void MainCanvas_MouseDown(object sender, MouseButtonEventArgs e)
@@ -117,10 +145,10 @@ namespace RadarTimingsTester
             if (e.ButtonState == MouseButtonState.Pressed)
             {
                 currentPoint = Mouse.GetPosition(MainCanvas);
-
+            
                 bool bad = true;
                 int safety = 0;
-
+            
                 while(bad)
                 {
                     // Define parameters used to create the BitmapSource.
@@ -129,35 +157,35 @@ namespace RadarTimingsTester
                     int height = 1;
                     int rawStride = (width * pf.BitsPerPixel + 7) / 8;
                     byte[] rawImage = new byte[rawStride * height];
-
+            
                     // Initialize the image with data.
                     Random value = new Random();
                     value.NextBytes(rawImage);
-
+            
                     // Create a BitmapSource.
                     generalImage = BitmapSource.Create(width, height,
                         10, 10, pf, null,
                         rawImage, rawStride);
-
+            
                     //Format is Bgr, reversed of normal, so I enter it backwards
                     currentColor = new SolidColorBrush(Color.FromRgb(rawImage[2], rawImage[1], rawImage[0]));
-
+            
                     bad = false;
-
+            
                     //Check to make sure we get a unique-ish color
                     int index = GetIndexFromColor(currentColor);
                     if(index == -1)
                     {
                         break;
                     }
-
+            
                     safety++;
                     if(safety > 1000)
                     {
                         break;
                     }
                 }
-
+            
                 if (!ready)
                 {
                     paths.Add(new PathData()
@@ -175,16 +203,16 @@ namespace RadarTimingsTester
             if (e.LeftButton == MouseButtonState.Pressed && ready)
             {
                 Line line = new Line();
-
+            
                 line.Stroke = currentColor;
                 line.StrokeThickness = 3;
                 line.X1 = currentPoint.X;
                 line.Y1 = currentPoint.Y;
                 line.X2 = Mouse.GetPosition(MainCanvas).X;
                 line.Y2 = Mouse.GetPosition(MainCanvas).Y;
-
+            
                 currentPoint = Mouse.GetPosition(MainCanvas);
-
+            
                 paths[paths.Count - 1].lines.Add(new Line()
                 {
                     Stroke = currentColor,
@@ -194,29 +222,32 @@ namespace RadarTimingsTester
                     Y1 = line.Y1,
                     Y2 = line.Y2
                 });
-
+            
                 MainCanvas.Children.Add(line);
             }
         }
 
         private void MainCanvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            ready = false;
-
-            paths[paths.Count - 1].CalculateTime();
-
-            StackPanel panel = new StackPanel()
+            if (paths.Count > 0)
             {
-                Orientation = Orientation.Horizontal
-            };
+                ready = false;
 
-            Image myImage = new Image();
-            myImage.Width = 10;
-            myImage.Source = generalImage;
+                paths[paths.Count - 1].CalculateTime();
 
-            panel.Children.Add(myImage);
-            panel.Children.Add(new TextBlock() { Text = paths[paths.Count - 1].ToString() });
-            ListOfLines.Items.Add(panel);
+                StackPanel panel = new StackPanel()
+                {
+                    Orientation = Orientation.Horizontal
+                };
+
+                Image myImage = new Image();
+                myImage.Width = 10;
+                myImage.Source = generalImage;
+
+                panel.Children.Add(myImage);
+                panel.Children.Add(new TextBlock() { Text = paths[paths.Count - 1].ToString() });
+                ListOfLines.Items.Add(panel);
+            }
         }
 
         private int GetIndexFromColor(SolidColorBrush color)
