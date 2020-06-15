@@ -1,0 +1,18 @@
+﻿<Window x:Class="RadarTimingsTester.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RadarTimingsTester"
+        mc:Ignorable="d"
+        Title="Radar Timings Tester (RTT)" Height="720" Width="1080" ResizeMode="CanMinimize">
+    <Grid Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}">
+        <Canvas x:Name="MainCanvas" MouseDown="MainCanvas_MouseDown" MouseMove="MainCanvas_MouseMove" MouseUp="MainCanvas_MouseUp" HorizontalAlignment="Left" Width="600" Height="600"/>
+        <Button Name="LoadMapButton" HorizontalAlignment="Right" VerticalAlignment="Top" Width="300" Height="50" Margin="0,30,75,0" FontSize="30" Click="LoadMapButton_Click">Load Map Radar</Button>
+        <TextBlock HorizontalAlignment="Right" VerticalAlignment="Top" Width="300" Height="29" Margin="0,100,75,0" FontSize="20" TextAlignment="Center" Visibility="Hidden">Drawing Mode</TextBlock>
+        <ComboBox Name="DrawOptions" HorizontalAlignment="Right" VerticalAlignment="Top" Width="300" Height="50" Margin="0,129,75,0" FontSize="30" Visibility="Hidden"></ComboBox>
+        <ListView x:Name="ListOfLines" Width="400" HorizontalAlignment="Right" Margin="0,196,35,77" SelectionChanged="ListOfLines_SelectionChanged"/>
+        <Button x:Name="Remove" FontSize="30" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,75,15" Width="300" Height="50" Click="Remove_Click">Remove Path</Button>
+        <TextBlock x:Name="ErrorText" VerticalAlignment="Bottom" HorizontalAlignment="Left" FontSize="15" Foreground="Red" Visibility="Hidden">Error</TextBlock>
+    </Grid>
+</Window>
