@@ -121,6 +121,11 @@ namespace RadarTimingsTester
         /// <returns></returns>
         private float ConvertFromStringToFloat(string val)
         {
+            if(!val.Contains("."))
+            {
+                return System.Convert.ToInt32(val);
+            }
+
             float result = 0;
             string[] halfs = val.Split('.');
             result = 0;
@@ -356,6 +361,9 @@ namespace RadarTimingsTester
                 MainCanvas.Children.Clear();
 
                 RedrawLines();
+
+                selectedIndex = -1;
+                selectedObj = null;
             }
         }
 
@@ -387,12 +395,13 @@ namespace RadarTimingsTester
                 ListOfLines.Items.Clear();
 
                 string path = fileDialog.FileName;
+                string ext = System.IO.Path.GetExtension(path);
                 ImageBrush imageBrush = new ImageBrush();
                 imageBrush.ImageSource = new BitmapImage(new Uri(path));
 
                 MainCanvas.Background = imageBrush;
 
-                string txtPath = path.Replace("_radar.png", ".txt");
+                string txtPath = path.Replace("_radar" + ext, ".txt");
                 int layerN = 1;
                 while(txtPath.Contains("_layer"))
                 {
