@@ -61,6 +61,8 @@ namespace RadarTimingsTester
             }
         }
 
+        private readonly string VERSION = "0.4";
+
         private bool ready = false;
         private Point currentPoint = new Point();
         private SolidColorBrush currentColor = new SolidColorBrush();
@@ -84,6 +86,8 @@ namespace RadarTimingsTester
             DrawOptions.Items.Add("Freehand");
             DrawOptions.Items.Add("Waypoint");
             DrawOptions.SelectedIndex = 0;
+
+            MainWin.Title = "Radar Timings Tester (RTT) [Version " + VERSION +"]";
         }
 
         private void LoadMapData(string path)
@@ -386,7 +390,7 @@ namespace RadarTimingsTester
         private void LoadMapButton_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.Filter = "png files (*.png)|*.png|All files (*.*)|*.*";
+            fileDialog.Filter = "dds files (*.dds)|*.dds|png files (*.png)|*.png|All files (*.*)|*.*";
             fileDialog.RestoreDirectory = true;
             if(fileDialog.ShowDialog() == true)
             {
@@ -396,10 +400,32 @@ namespace RadarTimingsTester
 
                 string path = fileDialog.FileName;
                 string ext = System.IO.Path.GetExtension(path);
-                ImageBrush imageBrush = new ImageBrush();
-                imageBrush.ImageSource = new BitmapImage(new Uri(path));
 
-                MainCanvas.Background = imageBrush;
+                //Manually load the image data into a byte[]. We do this so we can close the stream without holding onto the reference.
+                Stream imageStreamSource = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+                byte[] bytes = new byte[imageStreamSource.Length + 10];
+                int toRead = (int)imageStreamSource.Length;
+                int alreadyRead = 0;
+                do
+                {
+                    int n = imageStreamSource.Read(bytes, alreadyRead, 10);
+                    alreadyRead += n;
+                    toRead -= n;
+                } while (toRead > 0);
+                imageStreamSource.Close();
+
+                //Do that shit with whatever and make it show up. You get it.
+                using(var stream = new MemoryStream(bytes))
+                {
+                    BitmapImage bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.StreamSource = stream;
+                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmap.EndInit();
+
+                    ImageBrush b = new ImageBrush(bitmap);
+                    MainCanvas.Background = b;
+                }
 
                 string txtPath = path.Replace("_radar" + ext, ".txt");
                 int layerN = 1;

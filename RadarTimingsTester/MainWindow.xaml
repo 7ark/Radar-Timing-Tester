@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RadarTimingsTester"
         mc:Ignorable="d"
-        Title="Radar Timings Tester (RTT)" Height="720" Width="1080" ResizeMode="CanMinimize">
+        Name="MainWin" Title="Radar Timings Tester (RTT)" Height="720" Width="1080" ResizeMode="CanMinimize">
     <Grid Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}">
         <Canvas x:Name="MainCanvas" MouseDown="MainCanvas_MouseDown" MouseMove="MainCanvas_MouseMove" MouseUp="MainCanvas_MouseUp" HorizontalAlignment="Left" Width="600" Height="600"/>
         <Button Name="LoadMapButton" HorizontalAlignment="Right" VerticalAlignment="Top" Width="300" Height="50" Margin="0,30,75,0" FontSize="30" Click="LoadMapButton_Click">Load Map Radar</Button>
