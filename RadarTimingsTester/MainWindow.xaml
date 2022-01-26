@@ -7,12 +7,15 @@
         mc:Ignorable="d"
         Name="MainWin" Title="Radar Timings Tester (RTT)" Height="720" Width="1080" ResizeMode="CanMinimize">
     <Grid Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}">
-        <Canvas x:Name="MainCanvas" MouseDown="MainCanvas_MouseDown" MouseMove="MainCanvas_MouseMove" MouseUp="MainCanvas_MouseUp" HorizontalAlignment="Left" Width="600" Height="600"/>
-        <Button Name="LoadMapButton" HorizontalAlignment="Right" VerticalAlignment="Top" Width="300" Height="50" Margin="0,30,75,0" FontSize="30" Click="LoadMapButton_Click">Load Map Radar</Button>
+        <Canvas x:Name="MainCanvas" MouseDown="MainCanvas_MouseDown" MouseMove="MainCanvas_MouseMove" MouseUp="MainCanvas_MouseUp" HorizontalAlignment="Left" Width="600" Height="600" Margin="25,25,0,66" Background="Black"/>
+        <Button Name="LoadMapButton" HorizontalAlignment="Right" VerticalAlignment="Top" Width="400" Height="50" Margin="0,25
+                ,25,0" FontSize="30" Click="LoadMapButton_Click">Load Map Radar</Button>
         <TextBlock HorizontalAlignment="Right" VerticalAlignment="Top" Width="300" Height="29" Margin="0,100,75,0" FontSize="20" TextAlignment="Center" Visibility="Hidden">Drawing Mode</TextBlock>
         <ComboBox Name="DrawOptions" HorizontalAlignment="Right" VerticalAlignment="Top" Width="300" Height="50" Margin="0,129,75,0" FontSize="30" Visibility="Hidden"></ComboBox>
-        <ListView x:Name="ListOfLines" Width="400" HorizontalAlignment="Right" Margin="0,196,35,77" SelectionChanged="ListOfLines_SelectionChanged"/>
-        <Button x:Name="Remove" FontSize="30" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,75,15" Width="300" Height="50" Click="Remove_Click">Remove Path</Button>
+        <ListView x:Name="ListOfLines" Width="400" HorizontalAlignment="Right" Margin="0,100,25,141" SelectionChanged="ListOfLines_SelectionChanged" SelectionMode="Single"/>
+        <Button x:Name="RemovePathButton" FontSize="30" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,240,66" Width="185" Height="50" Click="Remove_Click">Remove Path</Button>
         <TextBlock x:Name="ErrorText" VerticalAlignment="Bottom" HorizontalAlignment="Left" FontSize="15" Foreground="Red" Visibility="Hidden">Error</TextBlock>
+        <Button x:Name="ClearAllPathsButton" FontSize="30" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,25,66" Width="185" Height="50" Click="RemoveAll_Click" Content="Clear All"/>
+        <Label x:Name="PathInfoLabel" Content="Label" HorizontalAlignment="Left" Height="51" Margin="25,630,0,0" VerticalAlignment="Top" Width="1024" FontSize="30"/>
     </Grid>
 </Window>
